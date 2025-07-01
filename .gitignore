@@ -1,3 +1,5 @@
 venv
 .env
 activate.sh
+__pycache__
+pycache
