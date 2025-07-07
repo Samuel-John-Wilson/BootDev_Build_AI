@@ -1,6 +1,7 @@
 import os
 from .get_files_info import is_subdirectory
-
+from google import genai
+from google.genai import types
 
 
 def write_file(working_directory, file_path, content):
@@ -24,7 +25,25 @@ def write_file(working_directory, file_path, content):
 
 
 
-        
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="""Open a file at input file path and overwrite it with input content. File path is contrained to the working directory. """,
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the python file to be written to, relative to the working directory.",
+            ),
+            "content" : types.Schema(
+                type=types.Type.STRING,
+                description= "The content to be written to the file"
+            )
+        },
+    ),
+)
+           
+      
 
             
 

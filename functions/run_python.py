@@ -1,6 +1,8 @@
 import os
 import subprocess
 from .get_files_info import is_subdirectory
+from google import genai
+from google.genai import types
 
 
 def run_python_file(working_directory, file_path):
@@ -47,4 +49,18 @@ def run_python_file(working_directory, file_path):
         return f"Error: executing Python file: {e}"
     
 
-        
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="""Run Python3 .py file at input file path. The code is limited to running for maximum 30 seconds. The file path is contrained to the working directory. 
+    Errors will be listed and returned. Output will be captured and returned """,
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the python file to be executed, relative to the working directory.",
+            ),
+        },
+    ),
+)
+           
