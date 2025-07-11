@@ -26,7 +26,18 @@ def call_function(function_call_part, verbose=False):
             response={"error": f"Unknown function: {function_call_part.name}"},
         )
     ],
-        )
+)
     else:
         function = function_map[function_call_part.name]
-        function(**function_map)
+        function_result = function(**arguments_map)
+        return types.Content(
+    role="tool",
+    parts=[
+        types.Part.from_function_response(
+            name=function_call_part.name,
+            response={"result": function_result},
+        )
+    ],
+)
+
+    

@@ -7,6 +7,7 @@ from functions.get_files_info import schema_get_files_info, get_files_info, is_s
 from functions.get_file_content import get_file_content, schema_get_file_content
 from functions.run_python import run_python_file, schema_run_python_file
 from functions.write_file import write_file, schema_write_file
+from functions.call_function import call_function
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -37,6 +38,12 @@ def main():
     if response.function_calls:
         for function_call_part in response.function_calls:
             print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+            call = call_function(function_call_part, verbose_flag)
+            if not call.parts[0].function_response.response:
+                raise Exception("Error: Invalid function response")
+            else:
+                if verbose_flag:
+                    print(f"-> {call.parts[0].function_response.response}")
     else:
         print(response.text)
     if verbose_flag:
