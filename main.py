@@ -35,6 +35,10 @@ def main():
     messages = [types.Content(role="user", parts=[types.Part(text=user_prompt)])] 
     response = client.models.generate_content(model='gemini-2.0-flash-001', contents=messages, config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt),)
     
+    if response.candidates:
+        for candidate in response.candidates:
+            messages.append(candidate.content)
+
     if response.function_calls:
         for function_call_part in response.function_calls:
             print(f"Calling function: {function_call_part.name}({function_call_part.args})")
@@ -42,6 +46,7 @@ def main():
             if not call.parts[0].function_response.response:
                 raise Exception("Error: Invalid function response")
             else:
+                messages.append(types.Content(role="tool", parts=call.parts))
                 if verbose_flag:
                     print(f"-> {call.parts[0].function_response.response}")
     else:
